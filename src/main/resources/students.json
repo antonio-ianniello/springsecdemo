@@ -1,0 +1,22 @@
+{
+  "status": "OK",
+  "data": [
+    {
+      "id": 1,
+      "name": "Antonio",
+      "surname": "Ianniello",
+      "age": 27,
+      "gender": "M",
+      "email": "antonio@test.com"
+    },
+    {
+      "id": 2,
+      "name": "Sara",
+      "surname": "Ianniello",
+      "age": 22,
+      "gender": "F",
+      "email": "sara@test.com"
+    }
+  ],
+  "error": null
+}
