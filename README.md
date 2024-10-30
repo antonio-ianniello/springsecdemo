@@ -42,3 +42,9 @@
 * FirstSecurityConfig with Basic auth
 * credentials on yaml file
 * Monitoring enabled at PATH: /random/students
+
+## version 1.0.2
+* BCryptPasswordEncoder added
+* InMemoryUserDetailsManager added
+* REMOVED credentials from YAML file, user stored in UserDetailsService Bean.
+Application is now accessible only by user `pippo` and not by `demo`

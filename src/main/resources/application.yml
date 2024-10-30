@@ -6,8 +6,3 @@ logging:
 spring:
   application:
     name: springsecuritydemo
-  security:
-    user:
-      password: demo
-      name: demo
-      roles: ADMIN
