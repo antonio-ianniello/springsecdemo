@@ -1,5 +1,13 @@
 server:
   port: ${SERVER_PORT:80}
+logging:
+  level:
+    root: INFO
 spring:
   application:
     name: springsecuritydemo
+  security:
+    user:
+      password: demo
+      name: demo
+      roles: ADMIN

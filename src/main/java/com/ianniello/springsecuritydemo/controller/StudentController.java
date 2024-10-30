@@ -5,6 +5,8 @@ import com.ianniello.springsecuritydemo.mapper.StudentMapper;
 import com.ianniello.springsecuritydemo.model.Student;
 import com.ianniello.springsecuritydemo.service.StudentService;
 import com.ianniello.springsecuritydemo.util.JsonUtils;
+import com.ianniello.springsecuritydemo.util.MonitoringUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +52,8 @@ public class StudentController {
     }
 
     @GetMapping("/random/students")
-    public ResponseEntity<GeneralResponseDto> getRandomStudents() {
+    public ResponseEntity<GeneralResponseDto> getRandomStudents(HttpServletRequest request) {
+        MonitoringUtils.monitoringRequest(request);
         List<Student> randomStudentList = studentService.getStudents();
         return ok(studentMapper.fromStudentToDtos(randomStudentList));
     }
