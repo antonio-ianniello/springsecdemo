@@ -14,10 +14,10 @@ package com.ianniello.springsecuritydemo.exception;
 public class NotAllowAccess extends CustomException {
 
     public NotAllowAccess(String message) {
-        super(-409, message);
+        super(-403, message);
     }
 
     public NotAllowAccess(String message, Object data) {
-        super(-409, message, data);
+        super(-403, message, data);
     }
 }

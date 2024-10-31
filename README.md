@@ -48,3 +48,120 @@
 * InMemoryUserDetailsManager added
 * REMOVED credentials from YAML file, user stored in UserDetailsService Bean.
 Application is now accessible only by user `pippo` and not by `demo`
+* Basic authentication has header `authorization` with value `Basic user:pwd` inbase64Format
+
+##  version 1.0.3
+* PATH /random accessible by ADMIN
+  * 403 Forbidden in case of USER without correct permissions
+  * 401 Unathorized without basic authentication
+
+
+* /triggered,/error, /ko and / accessible _**without**_ authentication 
+* other PATH like /students need basic authentication
+
+  Path: **_/triggered_** HttpStatus: **500**
+
+  `curl --location 'localhost:80/triggered' \
+  --header 'Cookie: JSESSIONID=numberofsessioncalculated'`
+  ```
+  {
+    "status": "KO",
+    "data": null,
+    "error": {
+        "code": 500,
+        "message": "/triggered"
+      }
+  }
+  ```
+  
+  Path: **_/error_** HttpStatus: **500**
+
+  `curl --location 'localhost:80/error' \
+  --header 'Cookie: JSESSIONID=numberofsessioncalculated'`
+  ```
+  {
+    "status": "KO",
+    "data": null,
+    "error": {
+        "code": 500,
+        "message": "error page called"
+      }
+  }
+  ```
+
+  Path: **_/ko_** HttpStatus: **200**
+
+` curl --location 'localhost:80/ko' \
+  --header 'Cookie: JSESSIONID=numberofsessioncalculated'`
+  ```
+  {
+    "status": "KO",
+    "data": null,
+    "error": null
+  }
+  ```
+  Path: **_/ok_** HttpStatus: **401** (page requires basic auth also if resource not exists)
+
+  ` curl --location 'localhost:80/ok' \
+  --header 'Cookie: JSESSIONID=numberofsessioncalculated'`
+  ```
+  {
+    "status": "KO",
+    "data": null,
+    "error": {
+        "code": 401,
+        "message": "Unauthorized"
+    }
+  }  
+  ```
+
+Path: **_/ok_** HttpStatus: **500** (resource not exists,basic auth used)
+
+` curl --location 'localhost:80/ok' \
+--header 'Authorization: ••••••' \
+--header 'Cookie: JSESSIONID=numberofsessioncalculated'`
+
+  ```
+  {
+    "status": "KO",
+    "data": null,
+    "error": {
+        "code": -500,
+        "message": "No static resource ok."
+    }
+  }
+  ```
+Path: **_/random/students_** HttpStatus: **401** (get without auth)
+
+` curl --location 'localhost:80/random/students' \
+--header 'Cookie: JSESSIONID=numberofsessioncalculated'`
+  ```
+  {
+    "status": "KO",
+    "data": null,
+    "error": {
+        "code": 401,
+        "message": "Unauthorized"
+    }
+}
+  ```
+
+Path: **_/random/students_** HttpStatus: **403** (get with Basic auth and user not admin)
+
+` curl --location 'localhost:80/random/students' \
+--header 'Authorization: ••••••' \
+--header 'Cookie: JSESSIONID=numberofsessioncalculated'`
+  ```
+  {
+    "status": "KO",
+    "data": null,
+    "error": {
+        "code": 403,
+        "message": "Access Denied"
+    }
+}
+  ```
+
+* Spring security managed 401 Unathorized with AuthenticationEntryPoint , CustomAuthenticationEntryPoint added
+* Spring security managed 403 Forbidden with AccessDeniedHandler, CustomAccessDeniedHandler added
+* There are two-way for managing errors, ExceptionHandler and method handleError in IndexController.

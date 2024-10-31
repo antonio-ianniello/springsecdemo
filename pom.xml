@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.ianniello</groupId>
 	<artifactId>springsecuritydemo</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<name>springsecuritydemo</name>
 	<description>Spring Security Demo</description>
 	<properties>

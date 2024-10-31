@@ -40,11 +40,6 @@ public class StudentController {
         this.studentService = service;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<GeneralResponseDto> studentHome() {
-        return ok(GeneralResponseDto.ok);
-    }
-
     @GetMapping("/random/student/{id}")
     public ResponseEntity<GeneralResponseDto> getRandomStudent(@PathVariable("id") int id) {
         Student student = studentService.getStudent(id);
@@ -63,17 +58,4 @@ public class StudentController {
         GeneralResponseDto responseDto = JsonUtils.fromJsonFile("students.json", GeneralResponseDto.class);
         return ok(responseDto);
     }
-
-    @GetMapping({"/ko"})
-    public ResponseEntity<GeneralResponseDto> getKo() {
-        return ok(GeneralResponseDto.failure);
-    }
-
-    @GetMapping({"/error"})
-    public ResponseEntity<GeneralResponseDto> getErroror() {
-        GeneralResponseDto koResponseDto = JsonUtils.fromJsonFile("ko.json", GeneralResponseDto.class);
-        return ok(koResponseDto);
-    }
-
-
 }

@@ -32,7 +32,6 @@ public class GlobalExceptionHandlerController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<GeneralResponseDto> handleCustomException(Exception e) throws IOException {
         log.error("HttpStatus {} will be returned | Exception Type: GeneralException | Details: {}", HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-
         return new ResponseEntity<>(new GeneralResponseDto<>(StudentStatusEnum.KO, -500, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

@@ -1,10 +1,13 @@
 package com.ianniello.springsecuritydemo.security;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,13 +24,27 @@ import org.springframework.security.web.SecurityFilterChain;
  */
 @Slf4j
 @Configuration
+@EnableMethodSecurity
+@EnableWebSecurity
 public class SecurityConfig {
-    
+
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
+    @Autowired
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain generalSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.anyRequest().authenticated();  //all the request must be authenticated
+                    auth.requestMatchers("/random/**").hasRole("ADMIN")         //all the request with /random need ADMIN permissions
+                            .requestMatchers(new String[]{"/error", "/ko", "/", "/triggered"}).permitAll()    //home path and error could be acceded without permissions
+                            .anyRequest().authenticated();                                      //all other paths need authentication
+                })
+                .exceptionHandling(ex -> {
+                    ex.authenticationEntryPoint(customAuthenticationEntryPoint);
+                    ex.accessDeniedHandler(customAccessDeniedHandler);
                 })
                 .httpBasic(Customizer.withDefaults());  //base authentication, header ->"authorization value ->"Basic YW50b25pippoYW5uaWVsbG8="
 
@@ -46,7 +63,12 @@ public class SecurityConfig {
                 .password(passwordEncoder.encode("franco"))
                 .roles("USER")
                 .build();
-        return new InMemoryUserDetailsManager(user);    //use default inMemory authentication
+        UserDetails admin = User.builder()
+                .username("admin")
+                .password(passwordEncoder.encode("admin"))
+                .roles("ADMIN")
+                .build();
+        return new InMemoryUserDetailsManager(user, admin);    //use default inMemory authentication
     }
 
 /*
